@@ -21,6 +21,7 @@ import {
   Page,
 } from '@influxdata/clockface'
 import {EditResourceAccordion} from 'src/authorizations/components/redesigned/EditResourceAccordion'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Types
 import {Authorization} from 'src/types'
@@ -55,6 +56,7 @@ const EditTokenOverlay: FC<Props> = props => {
   )
   const [label, setlabel] = useState(props.auth.status)
   const [permissions, setPermissions] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     if (_.isEmpty(permissions)) {
@@ -84,6 +86,10 @@ const EditTokenOverlay: FC<Props> = props => {
   const handleInputChange = event => {
     setDescription(event.target.value)
     setStatus(ComponentStatus.Default)
+  }
+
+  const handleChangeSearchTerm = (searchTerm: string): void => {
+    setSearchTerm(searchTerm)
   }
 
   const handleDismiss = () => props.onDismissOverlay()
@@ -146,6 +152,11 @@ const EditTokenOverlay: FC<Props> = props => {
             </FlexBox>
           </Form>
           <FlexBox.Child className="main-flexbox-child">
+            <SearchWidget
+              searchTerm={searchTerm}
+              placeholderText="Filter Access Permissions..."
+              onSearch={handleChangeSearchTerm}
+            />
             <FlexBox
               margin={ComponentSize.Large}
               justifyContent={JustifyContent.SpaceBetween}
@@ -178,6 +189,7 @@ const EditTokenOverlay: FC<Props> = props => {
             </FlexBox>
             <EditResourceAccordion
               permissions={formatPermissionsObj(permissions)}
+              searchTerm={searchTerm}
             />
           </FlexBox.Child>
           <Page.ControlBarCenter>
